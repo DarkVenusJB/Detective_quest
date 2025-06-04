@@ -22,12 +22,7 @@ public class MapEntryPoint : MonoBehaviour
         _spawnPointService = spawnPointService;
     }
     
-    private void Start()
-    {
-        _loadingScreen.alpha = 1;
-        
-        DifferedStart();
-    }
+   
 
     private async void DifferedStart()
     {

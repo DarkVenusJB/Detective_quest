@@ -1,18 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using Data;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using View;
 
-public class SceneLoaderService : MonoBehaviour
+namespace Services
 {
-    // Start is called before the first frame update
-    void Start()
+    public class SceneLoaderService
     {
+        private EEnviromentType _currentEnvironment;
+        private readonly LoadingScreenView _loadingScreen;
+        private bool _isLoading;
         
-    }
+        public EEnviromentType CurrentEnvironment => _currentEnvironment;
+        public bool IsLoading => _isLoading;
+        
+    
+        public SceneLoaderService(EEnviromentType environment, LoadingScreenView loadingScreen)
+        {
+            _currentEnvironment = environment;
+            _loadingScreen = loadingScreen;
+        }
+    
+        public async UniTask LoadScene(EEnviromentType environment)
+        {
+            if(_currentEnvironment == environment)
+                return;
 
-    // Update is called once per frame
-    void Update()
-    {
+            if (environment == EEnviromentType.Global)
+            {
+                Debug.LogError("Невозможно загрузить глобальную сцену!");
+                return;
+            }
+         
+            _isLoading = true;
+            
+            var environmentIndex = (int)environment;
+            var currentEnvironmentIndex = (int)_currentEnvironment;
         
+            if (_currentEnvironment != EEnviromentType.Global)
+                await SceneManager.UnloadSceneAsync(currentEnvironmentIndex);
+        
+            await SceneManager.LoadSceneAsync(environmentIndex, LoadSceneMode.Additive);
+        
+            _currentEnvironment = environment;
+        
+            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(environmentIndex));
+
+            await UniTask.NextFrame();
+            
+            _isLoading = false;
+        }
     }
 }
