@@ -9,7 +9,8 @@ namespace Services
         EEnviromentType CurrentEnvironment { get; }
         bool IsLoading { get; }
         void Init(EEnviromentType environment, LoadingScreenView loadingScreen);
-        UniTask StartLoadScene(EEnviromentType environment,  bool isStartGame = false);
+        UniTask StartLoadingGlobalScene();
+        UniTask StartLoadScene(EEnviromentType environment);
         UniTask CompleteLoadScene();
     }
 }

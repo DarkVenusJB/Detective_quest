@@ -10,29 +10,16 @@ namespace View
         [SerializeField] private CanvasGroup  _canvasGroup;
         [SerializeField] private float _loadingScreeFadeTime = 0.5f;
         
-        private bool _loadingScreenShowed = false;
+        private bool _loadingScreenShowed = true;
         
         public bool LoadingScreenShowed => _loadingScreenShowed;
-        
-        public void ShowLoadingScreen(bool isStartGame)
+
+        public void ShowLoadingScreen()
         {
-            if(_loadingScreenShowed)
+            if (_loadingScreenShowed)
                 return;
             
-            
-            if (isStartGame)
-            {
-                _canvasGroup.alpha = 1;
-                _loadingScreenShowed = true;
-            }
-            else
-            {
-                _canvasGroup.DOFade(0, _loadingScreeFadeTime).OnComplete(() =>
-                {
-                    _loadingScreenShowed = true;
-                });
-            }
-            
+            _canvasGroup.DOFade(0, _loadingScreeFadeTime).OnComplete(() => { _loadingScreenShowed = true; });
             
         }
 

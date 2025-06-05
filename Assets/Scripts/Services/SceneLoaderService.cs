@@ -22,26 +22,43 @@ namespace Services
             _loadingScreen = loadingScreen;
             
         }
+        
+        public async UniTask StartLoadingGlobalScene()
+        {
+            _isLoading = true;
+
+            if (!Application.CanStreamedLevelBeLoaded((int)EEnviromentType.Global))
+            {
+                Debug.LogError($"Scene with index {(int)EEnviromentType.Global} cannot be loaded!");
+                _isLoading = false;
+                return;
+            }
+            
+            _currentEnvironment = EEnviromentType.Global;
+            
+            await SceneManager.LoadSceneAsync((int)EEnviromentType.Global, LoadSceneMode.Additive);
+        }
     
-        public async UniTask StartLoadScene(EEnviromentType environment, bool isStartGame = false)
+        public async UniTask StartLoadScene(EEnviromentType environment)
         {
             if(_currentEnvironment == environment)
                 return;
-
-            if (environment == EEnviromentType.Global)
-            {
-                Debug.LogError("Невозможно загрузить глобальную сцену!");
-                return;
-            }
             
             var environmentIndex = (int)environment;
             var currentEnvironmentIndex = (int)_currentEnvironment;
         
             _isLoading = true;
             
-            Debug.Log("Star loading scene" + environment);
+            if (!Application.CanStreamedLevelBeLoaded(environmentIndex))
+            {
+                Debug.LogError($"Scene with index {environmentIndex} cannot be loaded!");
+                _isLoading = false;
+                return;
+            }
             
-            _loadingScreen.ShowLoadingScreen(isStartGame);
+            Debug.Log($"Start loading scene: {environment}");
+            
+            _loadingScreen.ShowLoadingScreen();
             
             await UniTask.WaitUntil(()=>_loadingScreen.LoadingScreenShowed);
             
@@ -58,12 +75,15 @@ namespace Services
             
             _isLoading = false;
         }
-
+        
+        
         public async UniTask CompleteLoadScene()
         {
             await UniTask.WaitWhile(() => IsLoading);
             
             _loadingScreen.HideLoadingScreen();
+            
+            Debug.Log($"Complete loading scene: {_currentEnvironment}");
         }
         
         
