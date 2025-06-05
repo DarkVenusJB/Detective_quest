@@ -2,16 +2,21 @@ using Services;
 using UnityEngine;
 using Zenject;
 
-public class ProjectInstaller : MonoInstaller
+namespace Installers
 {
-    public override void InstallBindings()
+    public class ProjectInstaller : MonoInstaller
     {
-        InstallServices();
-    }
+        public override void InstallBindings()
+        {
+            Debug.Log("Installing Project Installer");
+        
+            InstallServices();
+        }
 
-    public void InstallServices()
-    {
-        Container.BindInterfacesAndSelfTo<AudioService>().AsSingle().NonLazy();
-        Container.BindInterfacesAndSelfTo<SceneLoaderService>().AsSingle().NonLazy();
+        public void InstallServices()
+        {
+            Container.BindInterfacesAndSelfTo<AudioService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<SceneLoaderService>().AsSingle().NonLazy();
+        }
     }
 }

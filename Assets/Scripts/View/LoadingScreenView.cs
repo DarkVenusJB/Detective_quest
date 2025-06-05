@@ -14,6 +14,12 @@ namespace View
         
         public bool LoadingScreenShowed => _loadingScreenShowed;
 
+        public void Init()
+        {
+            _canvasGroup.alpha = 1;
+            _loadingScreenShowed = true;
+        }
+        
         public void ShowLoadingScreen()
         {
             if (_loadingScreenShowed)

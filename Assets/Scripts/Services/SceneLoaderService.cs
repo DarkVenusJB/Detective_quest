@@ -21,6 +21,8 @@ namespace Services
             _currentEnvironment = environment;
             _loadingScreen = loadingScreen;
             
+            
+            _loadingScreen.Init();
         }
         
         public async UniTask StartLoadingGlobalScene()
@@ -37,6 +39,7 @@ namespace Services
             _currentEnvironment = EEnviromentType.Global;
             
             await SceneManager.LoadSceneAsync((int)EEnviromentType.Global, LoadSceneMode.Additive);
+            await SceneManager.UnloadSceneAsync((int)EEnviromentType.Start);
         }
     
         public async UniTask StartLoadScene(EEnviromentType environment)
