@@ -1,7 +1,50 @@
-﻿namespace View
+﻿using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+namespace View
 {
-    public class LoadingScreenView
+    public class LoadingScreenView : MonoBehaviour
     {
+        [SerializeField] private CanvasGroup  _canvasGroup;
+        [SerializeField] private float _loadingScreeFadeTime = 0.5f;
         
+        private bool _loadingScreenShowed = false;
+        
+        public bool LoadingScreenShowed => _loadingScreenShowed;
+        
+        public void ShowLoadingScreen(bool isStartGame)
+        {
+            if(_loadingScreenShowed)
+                return;
+            
+            
+            if (isStartGame)
+            {
+                _canvasGroup.alpha = 1;
+                _loadingScreenShowed = true;
+            }
+            else
+            {
+                _canvasGroup.DOFade(0, _loadingScreeFadeTime).OnComplete(() =>
+                {
+                    _loadingScreenShowed = true;
+                });
+            }
+            
+            
+        }
+
+        public void HideLoadingScreen()
+        {
+            if(!_loadingScreenShowed)
+                return;
+            
+            _canvasGroup.DOFade(1, _loadingScreeFadeTime).OnComplete(() =>
+            {
+                
+            });
+        }
     }
 }

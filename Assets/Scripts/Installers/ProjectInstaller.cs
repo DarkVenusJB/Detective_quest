@@ -11,7 +11,7 @@ public class ProjectInstaller : MonoInstaller
 
     public void InstallServices()
     {
-        Container.Bind<AudioService>().AsSingle().NonLazy();
-        Container.Bind<SceneLoaderService>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<AudioService>().AsSingle().NonLazy();
+        Container.BindInterfacesAndSelfTo<SceneLoaderService>().AsSingle().NonLazy();
     }
 }

@@ -6,23 +6,24 @@ using View;
 
 namespace Services
 {
-    public class SceneLoaderService
+    public class SceneLoaderService : ISceneLoaderService
     {
         private EEnviromentType _currentEnvironment;
-        private readonly LoadingScreenView _loadingScreen;
+        private LoadingScreenView _loadingScreen;
         private bool _isLoading;
         
         public EEnviromentType CurrentEnvironment => _currentEnvironment;
         public bool IsLoading => _isLoading;
-        
-    
-        public SceneLoaderService(EEnviromentType environment, LoadingScreenView loadingScreen)
+
+
+        public void Init(EEnviromentType environment, LoadingScreenView loadingScreen)
         {
             _currentEnvironment = environment;
             _loadingScreen = loadingScreen;
+            
         }
     
-        public async UniTask LoadScene(EEnviromentType environment)
+        public async UniTask StartLoadScene(EEnviromentType environment, bool isStartGame = false)
         {
             if(_currentEnvironment == environment)
                 return;
@@ -32,12 +33,18 @@ namespace Services
                 Debug.LogError("Невозможно загрузить глобальную сцену!");
                 return;
             }
-         
-            _isLoading = true;
             
             var environmentIndex = (int)environment;
             var currentEnvironmentIndex = (int)_currentEnvironment;
         
+            _isLoading = true;
+            
+            Debug.Log("Star loading scene" + environment);
+            
+            _loadingScreen.ShowLoadingScreen(isStartGame);
+            
+            await UniTask.WaitUntil(()=>_loadingScreen.LoadingScreenShowed);
+            
             if (_currentEnvironment != EEnviromentType.Global)
                 await SceneManager.UnloadSceneAsync(currentEnvironmentIndex);
         
@@ -51,5 +58,14 @@ namespace Services
             
             _isLoading = false;
         }
+
+        public async UniTask CompleteLoadScene()
+        {
+            await UniTask.WaitWhile(() => IsLoading);
+            
+            _loadingScreen.HideLoadingScreen();
+        }
+        
+        
     }
 }
